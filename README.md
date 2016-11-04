@@ -1,4 +1,4 @@
-# Big Data with Haddop - TP4
+# Big Data with Hadoop - TP4
 
 Based on the tutorial Java class
 
