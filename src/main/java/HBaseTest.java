@@ -133,7 +133,7 @@ public class HBaseTest
             //System.out.print(new String(kv.getRow()) + " ");
             System.out.print(new String(kv.getFamily()) + ":");
             System.out.print(new String(kv.getQualifier()) + " ");
-            //System.out.print(kv.getTimestamp() + " " );
+            //System.out.print(kv.getTimestamp() + " " ); // Not needed in the display by the user
             System.out.println(new String(kv.getValue()));
         }
     }
@@ -161,7 +161,7 @@ public class HBaseTest
                     }
                     System.out.print(new String(kv.getFamily()) + ":");
                     System.out.print(new String(kv.getQualifier()) + " ");
-                    //System.out.print(kv.getTimestamp() + " ");
+                    //System.out.print(kv.getTimestamp() + " "); // Not needed in the display by the user
                     System.out.println(new String(kv.getValue()));
                 }
             }
@@ -175,11 +175,10 @@ public class HBaseTest
     {
         // Attributes in Info family
         String firstName, birthDate, phoneNumber, address;
-        String[] hobbies;
 
         // Best friend and other friends
         String bff;
-        String[] otherFriends;
+        String[] otherFriends; // one user entry, should be splitted
 
         // Use a scanner to get instructions from the user
         Scanner userInput = new Scanner(System.in);
@@ -211,16 +210,11 @@ public class HBaseTest
         System.out.print(firstName + "'s Other Friend (all first names separated by ','): ");
         otherFriends = userInput.nextLine().split(",");
 
-        HBaseTest.addRecord(tableName, firstName, "info", "birthDate", birthDate);
-        HBaseTest.addRecord(tableName, firstName, "info", "phoneNumber", phoneNumber);
-        HBaseTest.addRecord(tableName, firstName, "info", "address", address);
-        HBaseTest.addRecord(tableName, firstName, "friends", "bff", bff);
-
-        /* Need to convert the string array to a Byte
-        for (String s:otherFriends)
-        {
-            HBaseTest.addRecord(tableName, firstName, "friends", "otherFriends", s);
-        }*/
+        HBaseTest.addRecord(tableName, firstName, "info", "Birthdate", birthDate);
+        HBaseTest.addRecord(tableName, firstName, "info", "Phone Number", phoneNumber);
+        HBaseTest.addRecord(tableName, firstName, "info", "Address", address);
+        HBaseTest.addRecord(tableName, firstName, "friends", "Best Friend", bff);
+        HBaseTest.addRecord(tableName, firstName, "friends", "Other Friends", otherFriends.toString());
     }
 
     public static void main(String[] agrs)
@@ -231,19 +225,20 @@ public class HBaseTest
             char instruction;
 
             // Table user
-            String tableName = "user";
+            String tableName = "ayahia";
 
-            //Infos and Friends are groups of attributes
+            // Infos and Friends are groups of attributes
             String[] families = {"info", "friends"};
             HBaseTest.createTable(tableName, families);
 
             Boolean exit = false;
 
+
             System.out.println("\n" + DISPLAY + "\nWelcome to HNetwork, the best social network!\n");
 
             do
             {
-                System.out.println(DISPLAY + "\n1: Add a new user\n2: View a record\n3: View all records\nq: Exit\n\nType in your command (one character): ");
+                System.out.println(DISPLAY + "\n1: Add a new user\n2: View a record\n3: View all records\n4: Delete a user\nq: Exit\n\nType in your command (one character): ");
                 instruction = userInput.nextLine().charAt(0);
 
                 switch (instruction)
@@ -260,6 +255,12 @@ public class HBaseTest
                     case '3':
                         getAllRecord(tableName);
                         break;
+                    case '4':
+                        System.out.print("First Name of the user: ");
+                        userInput.reset(); // clear content of scanner
+                        String userNameToDel = userInput.nextLine();
+                        delRecord(tableName, userNameToDel);
+                        break;
                     case 'q':
                         exit = true;
                         break;
@@ -267,6 +268,8 @@ public class HBaseTest
                         System.out.println("Unknown instruction");
                         break;
                 }
+
+
             } while (!exit);
         } catch (Exception e)
         {
