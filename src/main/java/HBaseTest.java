@@ -177,8 +177,8 @@ public class HBaseTest
         String firstName, birthDate, phoneNumber, address;
 
         // Best friend and other friends
-        String bff;
-        String[] otherFriends; // one user entry, should be splitted
+        String bff, otherFriends;
+        // String[] otherFriends; // one user entry, should be splitted
 
         // Use a scanner to get instructions from the user
         Scanner userInput = new Scanner(System.in);
@@ -208,13 +208,13 @@ public class HBaseTest
         } while (bff.equals(""));
 
         System.out.print(firstName + "'s Other Friend (all first names separated by ','): ");
-        otherFriends = userInput.nextLine().split(",");
+        otherFriends = userInput.nextLine();
 
         HBaseTest.addRecord(tableName, firstName, "info", "Birthdate", birthDate);
         HBaseTest.addRecord(tableName, firstName, "info", "Phone Number", phoneNumber);
         HBaseTest.addRecord(tableName, firstName, "info", "Address", address);
         HBaseTest.addRecord(tableName, firstName, "friends", "Best Friend", bff);
-        HBaseTest.addRecord(tableName, firstName, "friends", "Other Friends", otherFriends.toString());
+        HBaseTest.addRecord(tableName, firstName, "friends", "Other Friends", otherFriends);
     }
 
     public static void main(String[] agrs)
@@ -232,7 +232,6 @@ public class HBaseTest
             HBaseTest.createTable(tableName, families);
 
             Boolean exit = false;
-
 
             System.out.println("\n" + DISPLAY + "\nWelcome to HNetwork, the best social network!\n");
 
